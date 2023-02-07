@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MiddlewarePractice.Middlewares;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,10 +52,14 @@ namespace MiddlewarePractice
             app.UseRouting();
 
             app.UseAuthorization();
-            //app.Run();
+
+            #region app.Run();
+
             //app.Run(async context => Console.WriteLine("Middleware 1."));
             //app.Run(async context => Console.WriteLine("Middleware 2."));
+            #endregion
 
+            #region app.Use();
 
             //app.Use(async (context, next) =>
             //{
@@ -76,14 +81,18 @@ namespace MiddlewarePractice
                 Console.WriteLine("Use middleware tetiklendi");
                 await next.Invoke();
             });
-            //app.Map();
+            #endregion
+
+            #region app.Map();
+
             app.Map("/example", internalApp => internalApp.Run(async context =>
             {
                 Console.WriteLine("/example middleware tetiklendi");
                 await context.Response.WriteAsync("/example middleware tetiklendi.");
             }));
+            #endregion
 
-            //app.MapWhen
+            #region app.MapWhen
             app.MapWhen(x => x.Request.Method == "GET", internalApp =>
             {
                 internalApp.Run(async context =>
@@ -93,6 +102,11 @@ namespace MiddlewarePractice
                          await context.Response.WriteAsync("MapWhen middleware tetiklendi.");    
                 });
             });
+            #endregion
+
+            #region oluşturduğumuz methodun startupa eklenmesi.
+            app.UseMiddlewareTest();
+            #endregion
 
 
 
